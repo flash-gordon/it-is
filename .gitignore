@@ -1,0 +1,7 @@
+.bundle
+sqlnet.log
+log/*.log
+tmp/*
+.idea
+.rvmrc
+.DS_Store
