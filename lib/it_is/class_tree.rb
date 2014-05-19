@@ -41,6 +41,14 @@ module ItIs
       def parents
         [parent] + parent.parents
       end
+
+      def to_s
+        'ItIs::Node (%s)' % value.name
+      end
+
+      def inspect
+        '%s. Child Nodes: %s' % [self, children.join(', ')]
+      end
     end
 
     class Root < Node

@@ -1,5 +1,5 @@
 describe :ItIs do
-  constants = %w(Base Foo Bar Baz)
+  constants = %w(Base Foo Bar Baz HelperBase HelperChild FooHelper BarHelper)
 
   before(:each) do
     Base = Class.new
@@ -10,11 +10,12 @@ describe :ItIs do
   end
 
   after(:each) do
-    constants.each {|const| Object.send(:remove_const, const)}
+    constants.each {|const| Object.send(:remove_const, const) if Object.const_defined?(const)}
   end
 
   it 'binds to class' do
-    klass = Class.new
+    ::HelperBase = Class.new
+    klass = HelperBase
     klass.class_eval do
       include(ItIs::DSL)
 
@@ -23,7 +24,8 @@ describe :ItIs do
 
     expect(klass).to respond_to :it_is_helper_for
 
-    descendant = Class.new(klass)
+    ::HelperChild = Class.new(klass)
+    descendant = HelperChild
     descendant.it_is_helper_for('Foo')
 
     expect(klass).to respond_to :helper_for
@@ -32,17 +34,18 @@ describe :ItIs do
 
   describe 'simple examples with helpers' do
     let(:base_helper) do
-      base = Class.new
-      base.class_eval do
-        include ItIs::DSL
-        it_will_be(:helper, Base)
+      unless defined? HelperBase
+        class HelperBase
+          include ItIs::DSL
+          it_will_be(:helper, Base)
+        end
       end
-      base
+      HelperBase
     end
 
     it 'works with inheritance' do
-      foo_helper = Class.new(base_helper)
-      bar_helper = Class.new(base_helper)
+      foo_helper = ::FooHelper = Class.new(base_helper)
+      bar_helper = ::BarHelper = Class.new(base_helper)
 
       base_helper.it_is_helper_for 'Base'
       foo_helper.it_is_helper_for 'Foo'
@@ -66,7 +69,7 @@ describe :ItIs do
     end
 
     it 'raises error on double mapping' do
-      foo_helper = Class.new(base_helper)
+      foo_helper = ::FooHelper = Class.new(base_helper)
       base_helper.it_is_helper_for 'Foo'
       foo_helper.it_is_helper_for 'Foo'
 
