@@ -5,3 +5,4 @@ tmp/*
 .idea
 .rvmrc
 .DS_Store
+Gemfile.lock
