@@ -1,7 +1,7 @@
 require 'active_support/descendants_tracker'
 require 'set'
 
-describe 'work with class inheritance tree' do
+RSpec.describe 'work with class inheritance tree' do
   constants = %w(Foo Bar Baz Qwe Asd Zxc Rty)
   create_descendants = Proc.new do |base|
     Bar = Class.new(base)

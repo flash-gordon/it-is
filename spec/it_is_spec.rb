@@ -1,4 +1,4 @@
-describe :ItIs do
+RSpec.describe :ItIs do
   constants = %w(Base Foo Bar Baz HelperBase HelperChild FooHelper BarHelper)
 
   before(:each) do
@@ -64,8 +64,8 @@ describe :ItIs do
       base_helper.it_is_helper_for 'Foo'
       foo_helper.it_is_helper_for 'Base'
 
-      expect {base_helper.helper_for(Foo)}.to raise_error
-      expect {base_helper.helper_for(Base)}.to raise_error
+      expect { base_helper.helper_for(Foo) }.to raise_error(StandardError)
+      expect { base_helper.helper_for(Base) }.to raise_error(StandardError)
     end
 
     it 'raises error on double mapping' do
@@ -73,8 +73,12 @@ describe :ItIs do
       base_helper.it_is_helper_for 'Foo'
       foo_helper.it_is_helper_for 'Foo'
 
-      expect {base_helper.helper_for(Foo)}.to raise_error
-      expect {base_helper.helper_for(Base)}.to raise_error
+      expect { base_helper.helper_for(Foo) }.to raise_error(
+        StandardError, /Double mapping/
+      )
+      expect { base_helper.helper_for(Base) }.to raise_error(
+        StandardError, /Double mapping/
+      )
     end
   end
 end
